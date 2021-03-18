@@ -1,0 +1,1 @@
+this is view/customer/layout.php file
