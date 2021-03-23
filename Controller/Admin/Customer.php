@@ -237,4 +237,19 @@ class Customer extends \Controller\Core\Customer
         header("Content-type: application/json; charset=utf-8");
         echo json_encode($response);
     }
+
+    public function setFiltersAction(){
+        try {
+            if (!$this->getRequest()->isPost()) {
+                throw new \Exception("Invalid Request");
+            }
+            $filter = $this->getRequest()->getPost('filter');
+            $filterModel = \Mage::getModel('Core\Filter');
+            $filterModel->setNamespace('Customer');
+            $filterModel->CustomerGrid = $filter;
+        } catch (\Exception $e) {
+            $this->getMessage()->setFailure($e->getMessage());
+        }
+        $this->gridAction();
+    }
 }

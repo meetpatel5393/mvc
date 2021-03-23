@@ -1,6 +1,7 @@
 <?php 
 	$product = $this->getProduct();
 	$arrayOfStatus = $this->getArrayOfStatus();
+	$productBrands = $this->getProductBrands()->getData();
 ?>
 <div class="container-fluid m-0 p-2 row">
 	<h3><?php if (!$product->productId) { echo "Create Product";} ?></h3>
@@ -56,6 +57,21 @@
 			<?php if($product->productId && $product->status == $key) { echo 'checked';} ?> required="">
 			<?php echo $value; ?>
 		<?php endforeach; ?>
+	</div>
+</div>
+<div class="row m-0 p-0">
+	<div class="col-md-2 m-0 p-0">
+		<p>Brand</p>
+	</div>
+	<div class="col-md-5 m-0 p-0">
+		<select name="product[brandId]">
+			<option selected="" value="0">Select Brand</option>
+			<?php foreach ($productBrands as $key => $brand) : ?>
+				<option value="<?php echo $brand->brandId; ?>" <?php if($brand->brandId == $product->brandId){echo 'selected';} ?>>
+					<?php echo $brand->name; ?>
+				</option>
+			<?php endforeach; ?>
+		</select>
 	</div>
 </div>
 <div class="row m-0 p-0">

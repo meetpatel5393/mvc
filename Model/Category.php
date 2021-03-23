@@ -7,11 +7,18 @@ class Category extends \Model\Core\Table
 	protected $categoryOptions = [];
 	public const STATUS_ENABLED = 1;
 	public const STATUS_DISABLED = 0;
+	public const STATUS_YES = 1;
+	public const STATUS_NO = 0;
 	public $arrayOfStatus = [
 		self::STATUS_ENABLED => 'Enabled',
 		self::STATUS_DISABLED => 'Disabled'
 	];
 	
+	public $featuredCategoryStatus = [
+		self::STATUS_YES => 'Yes',
+		self::STATUS_NO => 'No'
+	];
+
 	public function __construct(){
 		$this->setTableName('category');
 		$this->setPrimaryKey('categoryId');
@@ -19,6 +26,10 @@ class Category extends \Model\Core\Table
 	
 	public function getArrayOfStatus(){
 		return $this->arrayOfStatus;
+	}
+
+	public function featuredCategoryStatus(){
+		return $this->featuredCategoryStatus;
 	}
 
 	public function setCategoriesData($categoriesData = null){

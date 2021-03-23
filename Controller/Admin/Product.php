@@ -70,6 +70,13 @@ class Product extends \Controller\Core\Admin {
 				}
 				$productId = (int)$this->getRequest()->getGet('productId');
 				$productData = $this->getRequest()->getPost('product');
+
+				$brandId = $productData['brandId'];
+				$brandModel = \Mage::getModel('ProductBrand');
+				if(!$brandModel->load($brandId)){
+					throw new \Exception("Invalid Brand Id");
+				}
+
 				$data = $this->getModel()->load($productId);
 				if($data) {
 					$this->getModel()->updatedDate = date("Y-m-d");
@@ -79,30 +86,31 @@ class Product extends \Controller\Core\Admin {
 					$this->getModel()->createdDate = date("Y-m-d");
 					$this->getMessage()->setSuccess('Product Successfully Created');
 				}
+
 				$this->getModel()->setData($productData);
 				$this->getModel()->save();
 
-				$gridHtml = \Mage::getBlock('Admin\Product\Grid')->toHtml();
-				$messageHtml = \Mage::getBlock('Admin\Layout\Message')->toHtml();
-				$response = [
-					'status' => 'success',
-					'message' => 'u are execellent',
-					'element' => [
-						[
-							'selector'=>'#contentHtml',
-							'html'=> $gridHtml
-						],
-						[
-							'selector'=>'#messageHtml',
-							'html'=>$messageHtml
-						]
-					]
-				];
-				header("Content-type: application/json; charset=utf-8");
-				echo json_encode($response);
 		} catch (\Exception $e) {
 			$this->getMessage()->setFailure($e->getMessage());
 		}
+		$gridHtml = \Mage::getBlock('Admin\Product\Grid')->toHtml();
+		$messageHtml = \Mage::getBlock('Admin\Layout\Message')->toHtml();
+		$response = [
+			'status' => 'success',
+			'message' => 'u are execellent',
+			'element' => [
+				[
+					'selector'=>'#contentHtml',
+					'html'=> $gridHtml
+				],
+				[
+					'selector'=>'#messageHtml',
+					'html'=>$messageHtml
+				]
+			]
+		];
+		header("Content-type: application/json; charset=utf-8");
+		echo json_encode($response);
 	}
 	
 	public function deleteAction(){
@@ -218,5 +226,20 @@ class Product extends \Controller\Core\Admin {
 		];
 		header("Content-type: application/json; charset=utf-8");
 		echo json_encode($response);
+	}
+
+	public function setFiltersAction(){
+		try {
+			if (!$this->getRequest()->isPost()) {
+                throw new \Exception("Invalid Request");
+            }
+            $filter = $this->getRequest()->getPost('filter');
+			$filterModel = \Mage::getModel('Core\Filter');
+			$filterModel->setNamespace('Product');
+			$filterModel->ProductGrid = $filter;
+		} catch (\Exception $e) {
+			$this->getMessage()->setFailure($e->getMessage());
+		}
+		$this->gridAction();
 	}
 }

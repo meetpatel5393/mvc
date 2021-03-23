@@ -233,4 +233,30 @@ class Category extends \Controller\Core\Admin
         header("Content-type: application/json; charset=utf-8");
         echo json_encode($response);
     }
+
+    public function pagerAction(){
+        $pagerController = \Mage::getController('Controller\Core\Pager');
+        $pagerController->setTotalRecord(80);
+        $pagerController->setRecordPerPage(10);
+        $pagerController->setCurrentPage(10);
+
+        $pagerController->calculate();
+        echo '<pre>';
+        print_r($pagerController);
+    }
+
+    public function setFiltersAction(){
+        try {
+            if (!$this->getRequest()->isPost()) {
+                throw new \Exception("Invalid Request");
+            }
+            $filter = $this->getRequest()->getPost('filter');
+            $filterModel = \Mage::getModel('Core\Filter');
+            $filterModel->setNamespace('Category');
+            $filterModel->CategoryGrid = $filter;
+        } catch (\Exception $e) {
+            $this->getMessage()->setFailure($e->getMessage());
+        }
+        $this->gridAction();
+    }
 }

@@ -153,4 +153,19 @@ class Cms extends \Controller\Core\Admin
             $this->getMessage()->setFailure($e->getMessage());
         }
     }
+
+    public function setFiltersAction(){
+        try {
+            if (!$this->getRequest()->isPost()) {
+                throw new \Exception("Invalid Request");
+            }
+            $filter = $this->getRequest()->getPost('filter');
+            $filterModel = \Mage::getModel('Core\Filter');
+            $filterModel->setNamespace('Cms');
+            $filterModel->CmsGrid = $filter;
+        } catch (\Exception $e) {
+            $this->getMessage()->setFailure($e->getMessage());
+        }
+        $this->gridAction();
+    }
 }

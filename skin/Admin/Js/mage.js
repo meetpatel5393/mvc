@@ -99,7 +99,7 @@ Base.prototype = {
 		  		$(element.selector).html(element.html);
 		  	});
 		  }
-		});		
+		});	
 	},
 	update : function(id){
 		formId = '#'+$('form').attr('id');
@@ -134,5 +134,29 @@ Base.prototype = {
 			}
 		});
 		return this;
+	},
+	uploadBrandData : function(){
+		var fd = new FormData();
+  		var files = $('#file')[0].files;
+  		fd.append('file',files[0]);
+
+  		formId = '#'+$('form').attr('id');
+		fd.append('brand', JSON.stringify($(formId).serializeArray()));
+
+		this.setMethod($(formId).attr('method'));
+		this.setParams(fd);
+		
+		var request = $.ajax({
+		  method: this.getMethod(),
+		  url: this.getUrl(),
+		  data: this.getParams(),
+		  contentType: false,
+          processData: false,
+		  success: function(response){
+		  	$.each(response.element, function(i, element){
+		  		$(element.selector).html(element.html);
+		  	});
+		  }
+		});
 	}
 }

@@ -13,6 +13,10 @@ class Form extends \Block\Core\Template
 		return \Mage::getModel('Category')->getArrayOfStatus();
 	}
 
+	public function featuredCategoryStatus(){
+		return \Mage::getModel('Category')->featuredCategoryStatus();
+	}
+
 	public function setCategory($category = null){
 		if(!$category){
 			$category  = \Mage::getModel('Category');

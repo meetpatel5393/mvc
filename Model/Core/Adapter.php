@@ -129,5 +129,19 @@ class Adapter
     	}
     	return $this->getConnect()->query($query);
     }
+
+    public function fetchOne($query){
+    	if(!$this->isConnected()){
+    		$this->connection();
+    	}
+    	$result = $this->getConnect()->query($query);
+    	return $result->num_rows;
+    }
+
+    public function multiQuery($query){
+    	if(!$this->isConnected()){
+    		$this->connection();
+    	}
+    	return $this->getConnect()->multi_query($query);
+    }
 }
-?>

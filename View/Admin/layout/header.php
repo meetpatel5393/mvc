@@ -42,9 +42,13 @@
 	<div class="container-fluid m-0 p-0 col-md-1 my-auto">
 		<button class="btn text-white" onclick="object.setUrl('<?php echo $this->getUrl()->getUrl('grid','Admin\Attribute');?>').resetParams().load();">Attribute</button>
 	</div>
-	<!-- Attribute -->
+	<!-- Home -->
 	<div class="container-fluid m-0 p-0 col-md-1 my-auto">
 		<a class="btn text-white" href="<?php echo $this->getUrl()->getUrl('index','home',null,true);?>"class="text-white">
 		Home</a>
+	</div>
+	<!-- Brand -->
+	<div class="container-fluid m-0 p-0 col-md-1 my-auto">
+		<button class="btn text-white" onclick="object.setUrl('<?php echo $this->getUrl()->getUrl('grid','Admin\ProductBrand',null,true);?>').resetParams().load();">Brand</button>
 	</div>
 </div>

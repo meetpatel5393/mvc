@@ -2,6 +2,7 @@
 	$category = $this->getCategory();
 	$arrayOfStatus = $this->getArrayOfStatus();
 	$categoryDropDown = $this->getParentDropDown();
+	$featuredCategoryStatus = $this->featuredCategoryStatus();
 ?>
 <div class="container-fluid m-0 p-2 row">
 	<h3><?php if (!$category->categoryId) { echo "Create Category";} ?></h3>
@@ -43,6 +44,19 @@
 		<?php } ?>
 	</div>
 </div>
+<div class="row m-0 p-0">
+	<div class="col-md-2 m-0 p-0">
+		<p>Featured</p>
+	</div>
+	<div class="col-md-5 m-0 p-0">
+		<?php foreach ($featuredCategoryStatus as $key => $value) { ?>
+			<input type="radio" name="category[featured]" value="<?php echo $key; ?>"
+			<?php if($category->categoryId && $category->featured == $key) { echo 'checked';} ?> required="">
+			<?php echo $value; ?>
+		<?php } ?>
+	</div>
+</div>
+
 <div class="row m-0 p-0">
 	<div class="col-md-2 m-0 p-0">
 		<p>Description</p>

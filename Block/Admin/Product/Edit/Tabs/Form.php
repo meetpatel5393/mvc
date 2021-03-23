@@ -4,6 +4,7 @@ namespace Block\Admin\Product\Edit\Tabs;
 class Form extends \Block\Core\Template
 {
 	protected $product = null;
+	protected $productBrands;
 	public function __construct()
 	{
 		$this->setTemplate('Admin/Product/edit/tabs/form.php');
@@ -37,4 +38,20 @@ class Form extends \Block\Core\Template
 		$model = \Mage::getModel('Product');
 		return $model->getArrayOfStatus();
 	}	
+
+	public function setProductBrands($productBrands = null){
+		if(!$productBrands){
+			$model = \Mage::getModel('productBrand');
+			$productBrands = $model->fetchAll();
+		}
+		$this->productBrands = $productBrands;
+		return $this;
+	}
+
+	public function getProductBrands(){
+		if(!$this->productBrands){
+			$this->setProductBrands();
+		}
+		return $this->productBrands;
+	}
 }
