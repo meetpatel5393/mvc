@@ -178,10 +178,11 @@ class Group extends \Controller\Core\Admin
             if (!$this->getRequest()->isPost()) {
                 throw new \Exception("Invalid Request");
             }
-            $filter = $this->getRequest()->getPost('filter');
+            $filters = $this->getRequest()->getPost('filter');
             $filterModel = \Mage::getModel('Core\Filter');
             $filterModel->setNamespace('CustomerGroup');
-            $filterModel->CustomerGroupGrid = $filter;
+            $filterModel->setFilters($filters);
+            $filterModel->customerGroupFilters = $filterModel->getFilters();
         } catch (\Exception $e) {
             $this->getMessage()->setFailure($e->getMessage());
         }

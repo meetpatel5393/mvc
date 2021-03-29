@@ -1,7 +1,7 @@
 <?php
+spl_autoload_register(__NAMESPACE__.'\Mage::loadFileByClassName');
 class Mage {
 	public static function init() {
-		self::loadFileByClassName('Controller\Core\Front');
 		\Controller\Core\Front::init();
 	}
 	public static function loadFileByClassName($classname){

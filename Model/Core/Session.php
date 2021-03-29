@@ -48,8 +48,10 @@ class Session
 	}
 	
 	public function __get($key) {
-		if(array_key_exists($key, $_SESSION[$this->getNameSpace()])){
-			return $_SESSION[$this->getNameSpace()][$key];
+		if(array_key_exists($this->getNameSpace(), $_SESSION)) {
+			if(array_key_exists($key, $_SESSION[$this->getNameSpace()])) {
+				return $_SESSION[$this->getNameSpace()][$key];
+			}
 		}
 		return null;
 	}

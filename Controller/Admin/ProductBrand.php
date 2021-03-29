@@ -206,10 +206,11 @@ class ProductBrand extends \Controller\Core\Admin
             if (!$this->getRequest()->isPost()) {
                 throw new \Exception("Invalid Request");
             }
-            $filter = $this->getRequest()->getPost('filter');
+            $filters = $this->getRequest()->getPost('filter');
             $filterModel = \Mage::getModel('Core\Filter');
             $filterModel->setNamespace('ProductBrand');
-            $filterModel->ProductBrandGrid = $filter;
+            $filterModel->setFilters($filters);
+            $filterModel->productBrandFilters = $filterModel->getFilters();
         } catch (\Exception $e) {
             $this->getMessage()->setFailure($e->getMessage());
         }

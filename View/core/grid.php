@@ -1,5 +1,4 @@
 <?php $collection = $this->getCollection()->getData(); ?>
-<?php $this->getFilter()->getFilters();?>
 <form method="post" id='grid'>
 	<div class="container-fluid m-0 p-4">
 		<div class="row m-0 p-1">

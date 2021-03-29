@@ -159,10 +159,11 @@ class Cms extends \Controller\Core\Admin
             if (!$this->getRequest()->isPost()) {
                 throw new \Exception("Invalid Request");
             }
-            $filter = $this->getRequest()->getPost('filter');
+            $filters = $this->getRequest()->getPost('filter');
             $filterModel = \Mage::getModel('Core\Filter');
             $filterModel->setNamespace('Cms');
-            $filterModel->CmsGrid = $filter;
+            $filterModel->setFilters($filters);
+            $filterModel->cmsFilters = $filterModel->getFilters();
         } catch (\Exception $e) {
             $this->getMessage()->setFailure($e->getMessage());
         }

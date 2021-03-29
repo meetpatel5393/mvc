@@ -32,12 +32,12 @@ class Url
 			$final = array_merge($final,$params);
 		}
 		$query  = http_build_query($final);
-		$url = "http://localhost/mvc/index.php?{$query}";
+		$url = "http://localhost/cybercom1/index.php?{$query}";
 		return $url;
 	}
 	
 	public function baseUrl($subUrl = null){
-		$url = "http://localhost/mvc/";
+		$url = "http://localhost/cybercom1/";
 		if($subUrl){
 			$url .= $subUrl;
 		}

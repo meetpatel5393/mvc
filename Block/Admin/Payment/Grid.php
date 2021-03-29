@@ -3,6 +3,7 @@ namespace Block\Admin\Payment;
 \Mage::loadFileByClassName('Block\Core\Grid');
 class Grid extends \Block\Core\Grid
 {
+    protected $filter;
 	public function __construct(){
         parent::__construct();
         $this->prepareColumn();
@@ -10,20 +11,41 @@ class Grid extends \Block\Core\Grid
         $this->prepareButton();
     }
 
+    public function setFilter($filter = null){
+        if(!$filter){
+            $filter = \Mage::getModel('Core\Filter');
+        }
+        $filter->setNamespace('Payment');
+        $filter->setFilters($filter->paymentFilters);
+        $this->filter = $filter;
+        return $this;
+    }
+
+    public function getFilter(){
+        if(!$this->filter){
+            $this->setFilter();
+        }
+        return $this->filter;
+    }
+
     public function prepareCollection(){
         $model = \Mage::getModel('Payment');
         $filterModel = \Mage::getModel('Core\Filter');
-
         $filterModel->setNamespace('Payment');
+
         $query = '';
         if(array_key_exists('Payment', $_SESSION)) {
-            $filterFields = $filterModel->PaymentGrid;
-            if(empty(implode('', array_values($filterFields)))){
+           $filterModel->setFilters($filterModel->paymentFilters);
+
+            if(!$filterModel->getFilters()) 
+            {
                 $collection = $model->fetchAll();
-            } else {
-                foreach ($filterFields as $key => $value) {
-                    if($value) {
-                        $query.= "$key LIKE '$value%' AND ";
+            }
+            else 
+            {
+                foreach ($filterModel->getFilters() as $fieldType => $fieldNames) {
+                    foreach ($fieldNames as $fieldName => $value) {
+                        $query.= "$fieldName LIKE '$value%' AND ";
                     }
                 }
                 $query = "SELECT * FROM `payment` WHERE {$query}";

@@ -74,6 +74,7 @@ class Table
 		}
 		$param = rtrim($param,",");
 		$sql = "UPDATE `{$this->getTableName()}` SET {$param} WHERE {$this->getPrimaryKey()}={$this->data[$this->getPrimaryKey()]}";
+
 		$this->getAdapter()->update($sql);
 		$this->load($this->getData()[$this->getPrimaryKey()]);
 		return true;

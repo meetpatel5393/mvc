@@ -5,11 +5,11 @@ class Address extends \Model\Core\Table
 {
 	public function __construct(){
 		$this->setTableName('customer_address');
-		$this->setPrimaryKey('customerId');
+		$this->setPrimaryKey('addressId');
 	}
 
 	public function fetchAddress($addressType, $customerId){
-		$query = "SELECT * FROM `{$this->getTableName()}` WHERE `{$this->getPrimaryKey()}` = $customerId AND `addressType` = '{$addressType}'";
+		$query = "SELECT * FROM `{$this->getTableName()}` WHERE customerId = $customerId AND `addressType` = '{$addressType}'";
 		$this->fetchRow($query);
 		return $this;
 	}
@@ -22,15 +22,14 @@ class Address extends \Model\Core\Table
 		if($action == 'update'){
 			$param = null;
 			foreach ($this->data as $key => $value) {
-				if($key != $this->getPrimaryKey() && $key != 'addressType') {
+				if($key != $this->getPrimaryKey() && $key != 'addressType' && $key !='customerId') {
 					$param.= "`{$key}` = '{$value}',";
 				}
 			}
 			$param = rtrim($param,",");
-			$query = "UPDATE `{$this->getTableName()}` SET {$param} WHERE {$this->getPrimaryKey()}={$this->data[$this->getPrimaryKey()]}
+			$query = "UPDATE `{$this->getTableName()}` SET {$param} WHERE customerId={$this->data['customerId']}
 				AND `addressType`='{$this->data['addressType']}'";
 			return $this->getAdapter()->update($query);
 		}
 	}
 }
-?>

@@ -3,11 +3,29 @@ namespace Block\Admin\Customer\Group;
 \Mage::loadFileByClassName('Block\Core\Grid');
 class Grid extends \Block\Core\Grid
 {
-	public function __construct(){
+	protected $filter;
+    public function __construct(){
         parent::__construct();
         $this->prepareColumn();
         $this->prepareActions();
         $this->prepareButton();
+    }
+
+    public function setFilter($filter = null){
+        if(!$filter){
+            $filter = \Mage::getModel('Core\Filter');
+        }
+        $filter->setNamespace('CustomerGroup');
+        $filter->setFilters($filter->customerGroupFilters);
+        $this->filter = $filter;
+        return $this;
+    }
+
+    public function getFilter(){
+        if(!$this->filter){
+            $this->setFilter();
+        }
+        return $this->filter;
     }
 
     public function prepareCollection(){
@@ -17,13 +35,17 @@ class Grid extends \Block\Core\Grid
         $filterModel->setNamespace('CustomerGroup');
         $query = '';
         if(array_key_exists('CustomerGroup', $_SESSION)) {
-            $filterFields = $filterModel->CustomerGroupGrid;
-            if(empty(implode('', array_values($filterFields)))){
+            $filterModel->setFilters($filterModel->customerGroupFilters);
+
+            if(!$filterModel->getFilters()) 
+            {
                 $collection = $model->fetchAll();
-            } else {
-                foreach ($filterFields as $key => $value) {
-                    if($value) {
-                        $query.= "$key LIKE '$value%' AND ";
+            }
+            else 
+            {
+                foreach ($filterModel->getFilters() as $fieldType => $fieldNames) {
+                    foreach ($fieldNames as $fieldName => $value) {
+                        $query.= "$fieldName LIKE '$value%' AND ";
                     }
                 }
                 $query = "SELECT * FROM `customer_group` WHERE {$query}";

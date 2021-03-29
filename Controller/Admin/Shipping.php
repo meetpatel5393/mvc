@@ -156,10 +156,11 @@ class Shipping extends \Controller\Core\Admin
             if (!$this->getRequest()->isPost()) {
                 throw new \Exception("Invalid Request");
             }
-            $filter = $this->getRequest()->getPost('filter');
+            $filters = $this->getRequest()->getPost('filter');
             $filterModel = \Mage::getModel('Core\Filter');
             $filterModel->setNamespace('Shipping');
-            $filterModel->ShippingGrid = $filter;
+            $filterModel->setFilters($filters);
+            $filterModel->shippingFilters = $filterModel->getFilters();
         } catch (\Exception $e) {
             $this->getMessage()->setFailure($e->getMessage());
         }

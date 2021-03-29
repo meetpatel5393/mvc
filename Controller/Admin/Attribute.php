@@ -162,10 +162,11 @@ class Attribute extends \Controller\Core\Admin
             if (!$this->getRequest()->isPost()) {
                 throw new \Exception("Invalid Request");
             }
-            $filter = $this->getRequest()->getPost('filter');
+            $filters = $this->getRequest()->getPost('filter');
             $filterModel = \Mage::getModel('Core\Filter');
             $filterModel->setNamespace('Attribute');
-            $filterModel->AttributeGrid = $filter;
+            $filterModel->setFilters($filters);
+            $filterModel->attributeFilters = $filterModel->getFilters();
         } catch (\Exception $e) {
             $this->getMessage()->setFailure($e->getMessage());
         }

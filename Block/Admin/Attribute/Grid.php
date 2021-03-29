@@ -3,6 +3,7 @@ namespace Block\Admin\Attribute;
 \Mage::loadFileByClassName('Block\Core\Grid');
 class Grid extends \Block\Core\Grid
 {
+	protected $filter;
 	public function __construct(){
 		parent::__construct();
 		$this->prepareColumn();
@@ -10,21 +11,43 @@ class Grid extends \Block\Core\Grid
 		$this->prepareButton();
 	}
 
+	public function setFilter($filter = null){
+		if(!$filter){
+			$filter = \Mage::getModel('Core\Filter');
+		}
+		$filter->setNamespace('Attribute');
+		$filter->setFilters($filter->attributeFilters);
+		$this->filter = $filter;
+		return $this;
+	}
+
+	public function getFilter(){
+		if(!$this->filter){
+			$this->setFilter();
+		}
+		return $this->filter;
+	}
+
 	public function prepareCollection(){
         $model = \Mage::getModel('Attribute');
         $filterModel = \Mage::getModel('Core\Filter');
-
         $filterModel->setNamespace('Attribute');
+
         $query = '';
         if(array_key_exists('Attribute', $_SESSION)) {
-            $filterFields = $filterModel->AttributeGrid;
-            if(empty(implode('', array_values($filterFields)))){
+        	$filterModel->setFilters($filterModel->attributeFilters);
+
+
+            if(!$filterModel->getFilters()) 
+        	{
                 $collection = $model->fetchAll();
-            } else {
-                foreach ($filterFields as $key => $value) {
-                    if($value) {
-                        $query.= "$key LIKE '$value%' AND ";
-                    }
+        	}
+        	else
+        	{
+                foreach ($filterModel->getFilters() as $fieldType => $fieldNames) {
+                	foreach ($fieldNames as $fieldName => $value) {
+                        $query.= "$fieldName LIKE '$value%' AND ";
+                	}
                 }
                 $query = "SELECT * FROM `attribute` WHERE {$query}";
                 $query = rtrim($query, ' AND ');

@@ -3,12 +3,31 @@ namespace Block\Admin\Shipping;
 \Mage::loadFileByClassName('Block\Core\Grid');
 class Grid extends \Block\Core\Grid
 {
+    protected $filter;
 	public function __construct(){
         parent::__construct();
         $this->prepareColumn();
         $this->prepareActions();
         $this->prepareButton();
     }
+
+    public function setFilter($filter = null){
+        if(!$filter){
+            $filter = \Mage::getModel('Core\Filter');
+        }
+        $filter->setNamespace('Shipping');
+        $filter->setFilters($filter->shippingFilters);
+        $this->filter = $filter;
+        return $this;
+    }
+
+    public function getFilter(){
+        if(!$this->filter){
+            $this->setFilter();
+        }
+        return $this->filter;
+    }
+
 
     public function prepareCollection(){
         $model = \Mage::getModel('Shipping');
@@ -17,13 +36,17 @@ class Grid extends \Block\Core\Grid
         $filterModel->setNamespace('Shipping');
         $query = '';
         if(array_key_exists('Shipping', $_SESSION)) {
-            $filterFields = $filterModel->ShippingGrid;
-            if(empty(implode('', array_values($filterFields)))){
+           $filterModel->setFilters($filterModel->shippingFilters);
+
+            if(!$filterModel->getFilters()) 
+            {
                 $collection = $model->fetchAll();
-            } else {
-                foreach ($filterFields as $key => $value) {
-                    if($value) {
-                        $query.= "$key LIKE '$value%' AND ";
+            }
+            else 
+            {
+                foreach ($filterModel->getFilters() as $fieldType => $fieldNames) {
+                    foreach ($fieldNames as $fieldName => $value) {
+                        $query.= "$fieldName LIKE '$value%' AND ";
                     }
                 }
                 $query = "SELECT * FROM `shipping` WHERE {$query}";

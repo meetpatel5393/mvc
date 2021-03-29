@@ -1,7 +1,6 @@
 <?php
 	$title = 'Payment';
 	$payment = $this->getTableRow();
-	$arrayOfPaymentName = $payment->getArrayOfPaymentName();
 ?>
 <div class="container-fluid m-0 p-4">
 <form method="post" action="<?php echo $this->getUrl()->getUrl('save','Admin\Payment');?>" id="paymentForm">
@@ -15,11 +14,7 @@
 				<p>Payment Name</p>
 			</div>
 			<div class="col-md-5 m-0 p-0">
-				<?php foreach ($arrayOfPaymentName as $key => $value) : ?>
-					<input type="radio" name="payment[name]" value="<?php echo $value; ?>"
-					<?php if($payment->methodId && $payment->name == $value) { echo 'checked';} ?> required="">
-					<?php echo $value; ?>
-				<?php endforeach; ?>
+				<input type="text" name="payment[name]"  value="<?php echo $payment->name; ?>">
 			</div>
 		</div>
 		<div class="row m-0 p-0">

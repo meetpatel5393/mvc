@@ -47,7 +47,7 @@ class Category extends \Controller\Core\Admin
             if($categoryId){
                 $categoryData = $categoryModel->load($categoryId);
                 if(!$categoryData){
-                    throw new \Exception("unable to find data on this id");                    
+                    throw new \Exception("unable to find data on this id");                 
                 }
             }
             $tabName = $this->getRequest()->getGet('tab');
@@ -85,7 +85,6 @@ class Category extends \Controller\Core\Admin
             $categoriesData = $this->getModel()->getCategoriesData();
             $categoryId     = $this->getRequest()->getGet('categoryId');
             $data           = $this->getModel()->load($categoryId);
-
 
             if ($data) {
                 if(array_key_exists('parentId', $categoryData)) {
@@ -167,7 +166,7 @@ class Category extends \Controller\Core\Admin
             if (!$categoryData) {
                 throw new \Exception("Unable to fetch data on this id.");
             }
-            $categoriesData = $this->getModel()->getCategoriesData();
+            //$categoriesData = $this->getModel()->getCategoriesData();
             $parentId       = $categoryData->getData()['parentId'];
             $oldPath        = $categoryData->getData()['path'];
             $this->getModel()->updateChildPaths($categoryId, $parentId, $oldPath);
@@ -249,11 +248,12 @@ class Category extends \Controller\Core\Admin
         try {
             if (!$this->getRequest()->isPost()) {
                 throw new \Exception("Invalid Request");
-            }
-            $filter = $this->getRequest()->getPost('filter');
+            }            
+            $filters = $this->getRequest()->getPost('filter');
             $filterModel = \Mage::getModel('Core\Filter');
             $filterModel->setNamespace('Category');
-            $filterModel->CategoryGrid = $filter;
+            $filterModel->setFilters($filters);
+            $filterModel->categoryFilters = $filterModel->getFilters();
         } catch (\Exception $e) {
             $this->getMessage()->setFailure($e->getMessage());
         }

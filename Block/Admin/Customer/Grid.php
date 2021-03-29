@@ -3,6 +3,7 @@ namespace Block\Admin\Customer;
 \Mage::loadFileByClassName('Block\Core\Grid');
 class Grid extends \Block\Core\Grid
 {
+	protected $filter;
 	public function __construct()
 	{
 		parent::__construct();
@@ -11,30 +12,59 @@ class Grid extends \Block\Core\Grid
 		$this->prepareActions();
 	}
 
+	public function setFilter($filter = null){
+		if(!$filter){
+			$filter = \Mage::getModel('Core\Filter');
+		}
+		$filter->setNamespace('Customer');
+		$filter->setFilters($filter->customerFilters);
+		$this->filter = $filter;
+		return $this;
+	}
+
+	public function getFilter(){
+		if(!$this->filter){
+			$this->setFilter();
+		}
+		return $this->filter;
+	}
+
 	public function prepareCollection(){
 		$model = \Mage::getModel('Customer');
         $filterModel = \Mage::getModel('Core\Filter');
-
         $filterModel->setNamespace('Customer');
-        $query = '';
 
+        $query = '';
         if(array_key_exists('Customer', $_SESSION)) {
-            $filterFields = $filterModel->CustomerGrid;
-            if(empty(implode('', array_values($filterFields)))){
-                $collection = $model->fetchAll();
-            } else {
-                foreach ($filterFields as $key => $value) {
-                    if($value) {
-                        $query.= "$key LIKE '$value%' AND ";
-                    }
-                }
-                $query = "SELECT * FROM `customer` WHERE {$query}";
+            $filterModel->setFilters($filterModel->customerFilters);
+
+        	if(!$filterModel->getFilters()) 
+        	{
+                $collection = $model->customerData();
+        	}
+            else 
+            {
+                foreach ($filterModel->getFilters() as $fieldType => $fieldNames) {
+                	foreach ($fieldNames as $fieldName => $value) {
+                		if($fieldName == 'name') {
+                        	$query.= "customer_group.$fieldName LIKE '$value%' AND ";
+                		} else if($fieldName == 'zipcode') {
+                			$query.= "customer_address.$fieldName LIKE '$value%' AND ";	
+                		} else {
+                			$query.= "customer.$fieldName LIKE '$value%' AND ";	
+                		}
+                	}
+                }                
+                $query = "SELECT customer.customerId,customer.firstName,customer.lastName,customer.email,customer.status ,customer.createdDate, customer_group.name , customer_address.zipcode
+					FROM ((customer LEFT JOIN customer_group ON customer.groupId = customer_group.groupId)
+					LEFT JOIN customer_address ON customer.customerId = customer_address.customerId AND customer_address.addressType = 'billing') WHERE {$query}";
+					
                 $query = rtrim($query, ' AND ');
 
                 $collection = $model->fetchAll($query);
             }
         } else {
-            $collection = $model->fetchAll();
+            $collection = $model->customerData();
         }
         $this->setCollection($collection);
         return $this;

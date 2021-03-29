@@ -71,8 +71,12 @@ Base.prototype = {
 			$(response.element.selector).html(response.element.html);
 		}
 	},
-	setForm : function(){
-		formId = '#'+$('form').attr('id');
+	setForm : function(obj = null){
+		if(obj){
+			formId = '#'+$(obj).closest('form').attr('id');
+		} else {
+			formId = '#'+$('form').attr('id');
+		}
 		this.setParams($(formId).serializeArray());
 		this.setUrl($(formId).attr('action'));
 		this.setMethod($(formId).attr('method'));

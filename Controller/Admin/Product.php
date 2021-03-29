@@ -233,10 +233,11 @@ class Product extends \Controller\Core\Admin {
 			if (!$this->getRequest()->isPost()) {
                 throw new \Exception("Invalid Request");
             }
-            $filter = $this->getRequest()->getPost('filter');
-			$filterModel = \Mage::getModel('Core\Filter');
-			$filterModel->setNamespace('Product');
-			$filterModel->ProductGrid = $filter;
+            $filters = $this->getRequest()->getPost('filter');
+            $filterModel = \Mage::getModel('Core\Filter');
+            $filterModel->setNamespace('Product');
+            $filterModel->setFilters($filters);
+            $filterModel->productFilters = $filterModel->getFilters();
 		} catch (\Exception $e) {
 			$this->getMessage()->setFailure($e->getMessage());
 		}

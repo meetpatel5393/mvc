@@ -154,8 +154,10 @@ class Customer extends \Controller\Core\Customer
             $shippingAddress = $this->getRequest()->getPost('shipping');
             $model           = \Mage::getModel('Customer\Address');
 
-            $data = $model->load($customerId);
-            if (!$data) {
+            if(
+                !$model->fetchAddress('billing',$customerId)->getData()
+                && !$model->fetchAddress('shipping',$customerId)->getData()
+            ) {
                 $model->customerId  = $customerId;
                 $model->addressType = 'billing';
                 $model->setData($billingAddress);
@@ -243,10 +245,12 @@ class Customer extends \Controller\Core\Customer
             if (!$this->getRequest()->isPost()) {
                 throw new \Exception("Invalid Request");
             }
-            $filter = $this->getRequest()->getPost('filter');
+
+            $filters = $this->getRequest()->getPost('filter');
             $filterModel = \Mage::getModel('Core\Filter');
             $filterModel->setNamespace('Customer');
-            $filterModel->CustomerGrid = $filter;
+            $filterModel->setFilters($filters);
+            $filterModel->customerFilters = $filterModel->getFilters(); 
         } catch (\Exception $e) {
             $this->getMessage()->setFailure($e->getMessage());
         }
